@@ -46,26 +46,34 @@ write.csv(Filtered_samples, "Filtered_samples.csv")
 
 ### Mapping ####
 
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
 
-ggplot(Filtered_samples, aes(x = Collectionsite.Long, y = Collectionsite.Lat)) +
-  borders("state") +
-  geom_point(alpha = 0.7) +
-  coord_quickmap() +
-  theme_minimal() +
-  labs(x = "Longitude", y = "Latitude", title = "Sample Locations")
+# World boundaries as sf
+world <- ne_countries(scale = "medium", returnclass = "sf")
 
-
-
-us_map <- map_data("state")
+# Convert your sample data to sf
+samples_sf <- st_as_sf(
+  Filtered_samples,
+  coords = c("Collectionsite.Long", "Collectionsite.Lat"),
+  crs = 4326
+)
 
 ggplot() +
-  geom_polygon(data = us_map,
-               aes(x = long, y = lat, group = group),
-               fill = "gray90", color = "white") +
-  geom_point(data = Filtered_samples,
-             aes(x = Collectionsite.Long, y = Collectionsite.Lat),
-             color = "red", size = 2, alpha = 0.7) +
-  coord_quickmap(xlim = c(-125, -66), ylim = c(24, 50)) +
-  theme_minimal() +
-  labs(x = "Longitude", y = "Latitude",
-       title = "2025: Beekeeper Metabarcoding Sample Locations Across the United States")
+  geom_sf(data = world,
+          fill = NA,              # <-- outline only
+          color = "black",
+          linewidth = 0.3) +
+  geom_sf(data = samples_sf,
+          color = "black",
+          size = 2) +
+  coord_sf(xlim = c(-130, -60),
+           ylim = c(10, 55)) +    # includes Haiti
+  labs(
+    title = "Sample Locations",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal()
