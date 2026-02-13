@@ -23,10 +23,29 @@ Filtered_samples <- Filtered_samples[
 ]
 
 
+#### Fix incorrect / updated coordinates ####
+
+# BD25 – Pittsburgh, PA (correct longitude sign)
+Filtered_samples$Collectionsite.Lat[Filtered_samples$Shortid == "BD25"]  <- 39.43587
+Filtered_samples$Collectionsite.Long[Filtered_samples$Shortid == "BD25"] <- -104.53398
+
+# BE02 – Haiti (correct longitude sign)
+Filtered_samples$Collectionsite.Lat[Filtered_samples$Shortid == "BE02"]  <- 19.6616
+Filtered_samples$Collectionsite.Long[Filtered_samples$Shortid == "BE02"] <- -71.8364
+
+# BE85 – Rockingham, VA (corrected coordinates)
+Filtered_samples$Collectionsite.Lat[Filtered_samples$Shortid == "BE85"]  <- 38.519349
+Filtered_samples$Collectionsite.Long[Filtered_samples$Shortid == "BE85"] <- -78.8130454
+
+Filtered_samples$Collectionsite.Lat[Filtered_samples$Shortid == "BE25"]  <- 40.86225028545012
+Filtered_samples$Collectionsite.Long[Filtered_samples$Shortid == "BE25"] <- -72.51255178549893
+
+
 write.csv(Filtered_samples, "Filtered_samples.csv")
 
 
 ### Mapping ####
+
 
 ggplot(Filtered_samples, aes(x = Collectionsite.Long, y = Collectionsite.Lat)) +
   borders("state") +
@@ -49,4 +68,4 @@ ggplot() +
   coord_quickmap(xlim = c(-125, -66), ylim = c(24, 50)) +
   theme_minimal() +
   labs(x = "Longitude", y = "Latitude",
-       title = "Sample Locations Across the United States")
+       title = "2025: Beekeeper Metabarcoding Sample Locations Across the United States")
